@@ -18,16 +18,16 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import io.appium.java_client.android.AndroidDriver;
 
-public class ScrollandTap {
+public class CRScript1 {
 
     public static void main(String[] args) throws MalformedURLException {
         DesiredCapabilities capabilities = new DesiredCapabilities();
 
-        capabilities.setCapability("deviceName", "MI Note 6 Pro");
+        capabilities.setCapability("deviceName", "Pixel 5");
         capabilities.setCapability("platformName", "Android");
         capabilities.setCapability("automationName", "Appium");
         capabilities.setCapability("app", "C:\\apk\\cr.apk");
-        capabilities.setCapability("platformVersion", "9");
+        capabilities.setCapability("platformVersion", "10");
         capabilities.setCapability("appPackage", "org.curiouslearning.container");
         capabilities.setCapability("appActivity", "org.curiouslearning.container.MainActivity");
 
@@ -55,7 +55,7 @@ public class ScrollandTap {
 
         PointerInput finger1 = new PointerInput(PointerInput.Kind.TOUCH, "finger1");
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 3; i++) {
             Sequence scrollSequence = new Sequence(finger1, 1)
                     .addAction(finger1.createPointerMove(Duration.ZERO, PointerInput.Origin.viewport(), startX, startY))
                     .addAction(finger1.createPointerDown(PointerInput.MouseButton.LEFT.asArg()))

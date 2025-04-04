@@ -15,19 +15,18 @@ import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import io.appium.java_client.android.AndroidDriver;
 
-public class ScrollandTap {
+public class script2cr {
 
     public static void main(String[] args) throws MalformedURLException {
         DesiredCapabilities capabilities = new DesiredCapabilities();
 
-        capabilities.setCapability("deviceName", "MI Note 6 Pro");
+        capabilities.setCapability("deviceName", "Pixel 5");
         capabilities.setCapability("platformName", "Android");
         capabilities.setCapability("automationName", "Appium");
         capabilities.setCapability("app", "C:\\apk\\cr.apk");
-        capabilities.setCapability("platformVersion", "9");
+        capabilities.setCapability("platformVersion", "10");
         capabilities.setCapability("appPackage", "org.curiouslearning.container");
         capabilities.setCapability("appActivity", "org.curiouslearning.container.MainActivity");
 
@@ -37,25 +36,27 @@ public class ScrollandTap {
         System.out.println("Application Started");
 
         // Click on drop down
-        WebElement option = driver.findElement(By.id("org.curiouslearning.container:id/text_input_end_icon"));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+        WebElement option = wait.until(ExpectedConditions.elementToBeClickable(By.id("org.curiouslearning.container:id/text_input_end_icon")));
         option.click();
-        System.out.println("Drop down opened");
-
+        System.out.println("Drop down opened"); 
+        
+        WebElement option2 = driver.findElement(By.id("org.curiouslearning.container:id/text_input_end_icon"));
+        option2.click();
+        
         // Drop down options
         WebElement box = driver.findElement(By.id("org.curiouslearning.container:id/settings_box"));
 
         // Scrolling
         Dimension size = driver.manage().window().getSize();
-
         int startX = size.getWidth() / 2;
         int startY = (int) (size.getHeight() * 0.9);
-
         int endX = startX;
         int endY = size.getHeight() / 2;
 
         PointerInput finger1 = new PointerInput(PointerInput.Kind.TOUCH, "finger1");
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 4; i++) {
             Sequence scrollSequence = new Sequence(finger1, 1)
                     .addAction(finger1.createPointerMove(Duration.ZERO, PointerInput.Origin.viewport(), startX, startY))
                     .addAction(finger1.createPointerDown(PointerInput.MouseButton.LEFT.asArg()))
@@ -64,17 +65,11 @@ public class ScrollandTap {
                     .addAction(finger1.createPointerUp(PointerInput.MouseButton.LEFT.asArg()));
 
             driver.perform(Collections.singletonList(scrollSequence));
-            
         }
-        System.out.println("Scrolled to the prefered langauge");
-        
+        System.out.println("Scrolled to the preferred language");
 
         // Tapping
-        Point location = box.getLocation();
-        Dimension size1 = box.getSize();
-
-        Point centerOfElement = getCenterofElement(location, size1, 200);
-
+        Point centerOfElement = getCenterofElement(box.getLocation(), box.getSize(), 400);
         Sequence tapSequence = new Sequence(finger1, 1)
                 .addAction(finger1.createPointerMove(Duration.ZERO, PointerInput.Origin.viewport(), centerOfElement))
                 .addAction(finger1.createPointerDown(PointerInput.MouseButton.LEFT.asArg()))
@@ -85,30 +80,21 @@ public class ScrollandTap {
 
         System.out.println("Tapped on the option");
 
-        
         // Click on app icon
         WebElement appicon = driver.findElement(By.xpath(("(//android.widget.ImageView[@content-desc=\"Curious Reader\"])[1]")));
         appicon.click();
         System.out.println("Opening the app by clicking on the icon");
-        
-        //wait for the play button to load and click on play button
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        
-        WebElement play = wait.until(ExpectedConditions.elementToBeClickable(By.id("org.curiouslearning.container:id/web_app")));
+
+        // Wait for the play button to load and click on play button
+        WebDriverWait wait1 = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement play = wait1.until(ExpectedConditions.elementToBeClickable(By.id("org.curiouslearning.container:id/web_app")));
         play.click();
         System.out.println("Clicked on Play button");
-        
-        // Tap on the level button
-        int screenWidth = size.getWidth();
-        int screenHeight = size.getHeight();
 
-        int topleftX = (int) (screenWidth * 0.15); 
-        int topleftY = (int) (screenHeight * 0.2); 
-
-
-        
+        // Tap on the level button using common coordinates calculation
+        Point tapPoint = calculateTapCoordinates(size, 0.15, 0.2);
         Sequence taplevelbuttonSequence = new Sequence(finger1, 1)
-                .addAction(finger1.createPointerMove(Duration.ZERO, PointerInput.Origin.viewport(), topleftX, topleftY))
+                .addAction(finger1.createPointerMove(Duration.ZERO, PointerInput.Origin.viewport(), tapPoint))
                 .addAction(finger1.createPointerDown(PointerInput.MouseButton.LEFT.asArg()))
                 .addAction(new Pause(finger1, Duration.ofMillis(10)))
                 .addAction(finger1.createPointerUp(PointerInput.MouseButton.LEFT.asArg()));
@@ -116,15 +102,20 @@ public class ScrollandTap {
         driver.perform(Collections.singletonList(taplevelbuttonSequence));
 
         System.out.println("Clicked on level button");
-        
-    
-        // Close the driver
+
+        // Close the driver (uncomment this in production)
         //driver.quit();
     }
 
     private static Point getCenterofElement(Point location, Dimension size1, int offset) {
         int x = location.getX() + size1.getWidth() / 2;
         int y = location.getY() + size1.getHeight() / 2 + offset;
+        return new Point(x, y);
+    }
+
+    private static Point calculateTapCoordinates(Dimension screenSize, double xPercent, double yPercent) {
+        int x = (int) (screenSize.getWidth() * xPercent);
+        int y = (int) (screenSize.getHeight() * yPercent);
         return new Point(x, y);
     }
 }
